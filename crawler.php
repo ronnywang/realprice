@@ -76,11 +76,11 @@ class RealPriceCrawler
         }
     }
 
-    protected function getBaseOptions($area)
+    protected function getBaseOptions($city_id, $area)
     {
         return array(
             'type' => 'Qrydata',
-            'Qry_city' => $area[0],
+            'Qry_city' => $city_id,
             'Qry_area_office' => $area,
             'Qry_paytype' => '1,2,3,4',
             'Qry_build' => '',
@@ -175,10 +175,10 @@ class RealPriceCrawler
         return $message->body;
     }
 
-    public function crawlerData($area)
+    public function crawlerData($city_id, $area)
     {
         error_log($area);
-        $options = $this->getBaseOptions($area);
+        $options = $this->getBaseOptions($city_id, $area);
 
         $datas = array();
 
@@ -219,7 +219,7 @@ foreach ($crawler->city as $city_id => $city_name) {
         if (file_exists(__DIR__ . '/raw/' . $filename)) {
             continue;
         }
-        $data = $crawler->crawlerData($area_id);
+        $data = $crawler->crawlerData($city_id, $area_id);
         file_put_contents(__DIR__ . '/raw/' . $filename, json_encode($data));
     }
 }
