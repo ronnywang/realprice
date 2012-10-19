@@ -182,6 +182,7 @@ class RealPriceCrawler
 
         $datas = array();
 
+        $last_price = null;
         while (true) {
             $body = $this->getBodyFromOptions($options);
             $results = $this->parseHTML($body);
@@ -193,6 +194,15 @@ class RealPriceCrawler
                 throw new Exception('找不到任何價錢?');
             }
             $price = intval(str_replace(',', '', $matches[1]));
+            if ($last_price == $price) {
+                file_put_contents(
+                    __DIR__ . '/warnings',
+                    "{$area} 價錢為 {$price} 超過 28 筆，可能會遺漏資料\n",
+                    FILE_APPEND
+                );
+                break;
+            }
+            $last_price = $price;
             $options['Qry_price_e'] = intval($price / 10000);
             echo $price . "\n";
         }
