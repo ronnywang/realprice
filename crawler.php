@@ -96,6 +96,7 @@ class RealPriceCrawler
             'Qry_order' => 'QA08&desc',
             'Qry_unit' => '2',
             'Qry_area_srh' => '',
+            'Qry_origin' => 'P',
         );
     }
 
