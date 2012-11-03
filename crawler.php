@@ -295,10 +295,11 @@ class RealPriceCrawler
         while (true) {
             $body = $this->getBodyFromOptions($options);
             $results = $this->parseHTML($body, $city_id, $area);
+            $datas = array_merge($datas, $results);
+
             if (count($results) < 28) {
                 break;
             }
-            $datas = array_merge($datas, $results);
             if (!preg_match('#<td class="text_10">交易總價：</td>\s+<td width="34%" class="text_red_bold">([^<]*)</td>#m', $results[count($results) - 1]->content, $matches)) {
                 throw new Exception('找不到任何價錢?');
             }
