@@ -100,7 +100,24 @@ class RealPriceCrawler
         );
     }
 
-    protected function parseHTML($body)
+    protected function getDetailOptions($city_id, $area, $result, $types)
+    {
+        return $types + array(
+            'inType' => $result->inType,
+            'Qry_city' => $city_id,
+            'area' => $area,
+            'caseNo' => $result->caseNo,
+            'caseSeq' => $result->caseSeq,
+            'seq' => '1',
+            'Qry_unit' => '2',
+            'type' => '',
+            'park' => '',
+            'floor' => '',
+            'jd14' => '',
+        );
+    }
+
+    protected function parseHTML($body, $city_id, $area)
     {
         if (strpos($body, '<div class="description">未找到相關資料</div>')) {
             return array();
@@ -130,12 +147,98 @@ class RealPriceCrawler
                     $count ++;
                     $results[$count] = new StdClass;
                     $results[$count]->content = $doc->saveHTML($tr_dom);
+                    if (!preg_match("#payDetail\('([^']*)','([^']*)','([^']*)','([^']*)','([^']*)','([^']*)','([^']*)'\)#", $results[$count]->content, $matches)) {
+                        var_dump('failed');
+                        exit;
+                    }
+                    $results[$count]->inType = $matches[1];
+                    $results[$count]->caseNo = $matches[4];
+                    $results[$count]->caseSeq = $matches[5];
+                    $results[$count]->address = $matches[3];
+                    $results[$count]->bizcode = $matches[2];
+                    $details = array();
+                    foreach ($this->getTypesFromBizCode($matches[2]) as $types) {
+                        $detail = $this->getDetailBody($results[$count], $city_id, $area, $types);
+                        if (!$detail) {
+                            continue;
+                        }
+                        $details[] = $detail;
+                    }
+                    $results[$count]->details = $details;
                 } elseif ('script' == $tr_dom->nodeName) {
                     $results[$count]->script = $doc->saveHTML($tr_dom);
                 }
             }
         }
         return array_values($results);
+    }
+
+    public function getTypesFromBizCode($bizcode)
+    {
+        switch ($bizcode) {
+        case 1:
+            return array(
+                array('type' => 'C'),
+                arraY('type' => 'F'),
+            ); // 土地+房屋
+        case 2:
+            return array(
+                array('type' => 'C'),
+                array('type' => 'F'),
+                array('park' => 'park'),
+            ); // 土地+房屋+車位
+        case 3:
+            return array(
+                array('type' => 'C'),
+            ); // 土地
+        case 4:
+            return array(
+                array('type' => 'F'),
+            ); // 建物
+        default:
+            return array(
+                array('park' => 'park'),
+            ); // 車位
+        }
+    }
+
+    public function getDetailBody($result, $city_id, $area, $types)
+    {
+        $url = 'http://lvr.land.moi.gov.tw/N11/GetN11Deatil';
+        $options = $this->getDetailOptions($city_id, $area, $result, $types);
+        $post_data = array();
+        foreach ($options as $key => $value) {
+            $post_data[$key] = base64_encode($value);
+        }
+
+        $response = http_post_fields($url, $post_data, array(), array(
+            'cookies' => array('JSESSIONID' => $this->cookie),
+            'useragent' => 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4',
+            'referer' => 'http://lvr.land.moi.gov.tw/N11/login.action',
+            'headers' => array(
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Origin' => 'http://lvr.land.moi.gov.tw',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ),
+        ));
+        $message = http_parse_message($response);
+
+        if (404 == $message->responseCode) {
+            return '';
+        }
+        if ($message->responseCode != 200) {
+            var_dump($message);
+            var_dump($options);
+            var_dump($result);
+            throw new Exception('抓到不是200');
+        }
+
+        if ('' == $message->body) {
+            var_dump($response);
+            print_r($options);
+            throw new Exception("抓到的內容是空的");
+        }
+        return $message->body;
     }
 
     protected $_last_fetch = null;
@@ -163,6 +266,10 @@ class RealPriceCrawler
             ),
         ));
         $message = http_parse_message($response);
+        if (404 == $message->responseCode) {
+            var_dump($options);
+            exit;
+        }
         if (strpos($message->body, '系統連線已逾時,請重新登入')) {
             $this->authCode();
             return $this->getBodyFromOptions($options);
@@ -186,7 +293,7 @@ class RealPriceCrawler
         $last_price = null;
         while (true) {
             $body = $this->getBodyFromOptions($options);
-            $results = $this->parseHTML($body);
+            $results = $this->parseHTML($body, $city_id, $area);
             if (count($results) < 28) {
                 break;
             }
