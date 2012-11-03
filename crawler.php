@@ -223,6 +223,11 @@ class RealPriceCrawler
         ));
         $message = http_parse_message($response);
 
+        if (!$message) {
+            $this->authCode();
+            return $this->getDetailBody($result, $cidy_id, $area, $types);
+        }
+
         if (404 == $message->responseCode) {
             return '';
         }
@@ -266,11 +271,7 @@ class RealPriceCrawler
             ),
         ));
         $message = http_parse_message($response);
-        if (404 == $message->responseCode) {
-            var_dump($options);
-            exit;
-        }
-        if (strpos($message->body, '系統連線已逾時,請重新登入')) {
+        if (404 == $message->responseCode or strpos($message->body, '系統連線已逾時,請重新登入')) {
             $this->authCode();
             return $this->getBodyFromOptions($options);
         }
