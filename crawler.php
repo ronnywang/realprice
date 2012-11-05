@@ -63,7 +63,13 @@ class RealPriceCrawler
         $tmpfp = tmpfile();
         fwrite($tmpfp, $message->body);
         $tmp_meta = stream_get_meta_data($tmpfp);
-        system('jp2a ' . escapeshellarg($tmp_meta['uri']));
+        $return_var = 0;
+        system('jp2a ' . escapeshellarg($tmp_meta['uri']), $return_var);
+        if ($return_var == 1) {
+            // 不是圖片，就再試一次...
+            return $this->authCode();
+        }
+
         fclose($tmpfp);
         $code = readline("請輸入認證碼: ");
 
