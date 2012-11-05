@@ -251,7 +251,21 @@ class RealPriceCrawler
             return $this->getDetailBody($result, $cidy_id, $area, $types);
         }
 
+        // 如果 404 表示被擋了，必需要回上一層 query 一次上一層網址再回來
         if (404 == $message->responseCode) {
+            $this->authCode();
+            $response = http_post_fields($this->_last_url, $this->_last_post_data, array(), array(
+                'cookies' => array('JSESSIONID' => $this->cookie),
+                'useragent' => 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4',
+                'referer' => 'http://lvr.land.moi.gov.tw/N11/login.action',
+                'headers' => array(
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Origin' => 'http://lvr.land.moi.gov.tw',
+                    'X-Requested-With' => 'XMLHttpRequest',
+                ),
+            ));
+            return $this->getDetailBody($result, $cidy_id, $area, $types);
+            exit;
             return '';
         }
         if ($message->responseCode != 200) {
@@ -270,6 +284,7 @@ class RealPriceCrawler
     }
 
     protected $_last_fetch = null;
+    protected $_last_fetch_detail = null;
 
     protected function getBodyFromOptions($options)
     {
@@ -283,6 +298,9 @@ class RealPriceCrawler
         $this->_last_fetch = microtime(true);
 
         $url = 'http://lvr.land.moi.gov.tw/N11/LandBuildBiz';
+        $this->_last_url = $url;
+        $this->_last_post_data = $post_data;
+
         $response = http_post_fields($url, $post_data, array(), array(
             'cookies' => array('JSESSIONID' => $this->cookie),
             'useragent' => 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4',
