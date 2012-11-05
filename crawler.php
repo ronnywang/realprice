@@ -42,8 +42,15 @@ class RealPriceCrawler
         return $ret;
     }
 
+    protected $_last_fetch_captcha = null;
+
     public function authCode()
     {
+        while (!is_null($this->_last_fetch_captcha) and (microtime(true) - $this->_last_fetch_captcha) < 2) {
+            usleep(1000);
+        }
+
+        $this->_last_fetch_captcha = microtime(true);
         // 1. 先輸入認證碼
         $url = 'http://lvr.land.moi.gov.tw/N11/ImageNumberN13';
         $response = http_get($url);
