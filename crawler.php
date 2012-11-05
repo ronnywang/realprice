@@ -229,6 +229,11 @@ class RealPriceCrawler
             $post_data[$key] = base64_encode($value);
         }
 
+        while (!is_null($this->_last_fetch_detail) and (microtime(true) - $this->_last_fetch_detail) < 0.5) {
+            usleep(1000);
+        }
+        $this->_last_fetch_detail = microtime(true);
+
         $response = http_post_fields($url, $post_data, array(), array(
             'cookies' => array('JSESSIONID' => $this->cookie),
             'useragent' => 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4',
