@@ -115,7 +115,7 @@ class RealPriceCrawler
 
     protected function getDetailOptions($city_id, $area, $result, $types)
     {
-        return $types + array(
+        $options = array(
             'inType' => $result->inType,
             'Qry_city' => $city_id,
             'area' => $area,
@@ -128,6 +128,11 @@ class RealPriceCrawler
             'floor' => '',
             'jd14' => '',
         );
+
+        foreach ($types as $key => $value) {
+            $options[$key] = $value;
+        }
+        return $options;
     }
 
     protected function parseHTML($body, $city_id, $area)
