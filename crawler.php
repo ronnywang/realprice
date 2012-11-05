@@ -280,7 +280,7 @@ class RealPriceCrawler
             print_r($options);
             throw new Exception("抓到的內容是空的");
         }
-        return $message->body;
+        return trim($message->body);
     }
 
     protected $_last_fetch = null;
