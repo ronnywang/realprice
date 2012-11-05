@@ -364,7 +364,17 @@ class RealPriceCrawler
 
 $crawler = new RealPriceCrawler;
 $crawler->authCode();
-foreach ($crawler->city as $city_id => $city_name) {
+
+$cities = $crawler->city;
+
+if ($city_id = $_SERVER['argv'][1]) {
+    if (!array_key_exists($city_id, $cities)) {
+        die("找不到這個 city_id");
+    }
+    $cities = array($city_id => $cities[$city_id]);
+}
+
+foreach ($cities as $city_id => $city_name) {
     foreach ($crawler->getAreasFromCity($city_id) as $area_id => $area_name) {
         $filename = $area_id . '-' . $city_name . '-' . $area_name;
         if (file_exists(__DIR__ . '/raw/' . $filename)) {
