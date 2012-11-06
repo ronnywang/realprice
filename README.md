@@ -3,11 +3,16 @@ crawler.php
 需要安裝 pecl-http, php5-readline
 以及需要有 jp2a (把 captcha 圖片轉成 ascii ，這樣只要專心在 console 上輸入認證碼就好)
 
+parser.php
+parse 資料的程式，將 raw 資料夾內所有 HTML 轉換成 json
+
 raw/
 放從實價登錄網頁抓到原始資料，包含 HTML 和 javascript
 
 完整 json 檔案:
-https://www.dropbox.com/sh/k4bf49ebpga1ubz/Ac9nhbnZB2
+[Dropbox](https://www.dropbox.com/sh/k4bf49ebpga1ubz/Ac9nhbnZB2 Dropbox)
+[Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMQ25TRDZONmxucEk Google Drive)
+
 2012/11/06 處理完成，一共 17,826 筆
 
 json 格式:
