@@ -172,8 +172,13 @@ class RealParser
                 $new_entry->caseSeq = $entry->caseSeq;
                 $new_entry->address = $entry->address;
 
-                $table_dom = $doc->getElementsByTagName('table')->item(1);
-                $tr_doms = $table_dom->getElementsByTagName('tr');
+                $tr_doms = array();
+                foreach (array(1, 2) as $pos) {
+                    foreach ($doc->getElementsByTagName('table')->item($pos)->getElementsByTagName('tr') as $tr_dom) {
+                        $tr_doms[] = $tr_dom;
+                    }
+                }
+
                 $fields = new StdClass;
                 foreach ($tr_doms as $tr_dom) {
                     $td_doms = array();
