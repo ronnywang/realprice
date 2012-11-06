@@ -12,7 +12,7 @@ raw/
 完整 json 檔案:
 * 2012/11/06 處理完成，一共 17,826 筆，到 2012/8 月資料
 * * [Dropbox](https://www.dropbox.com/sh/k4bf49ebpga1ubz/Ac9nhbnZB2)
-* * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMQ25TRDZONmxucEk)
+* * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMQ25TRDZONmxucEk/edit)
 
 
 json 格式:
