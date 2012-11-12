@@ -56,7 +56,8 @@ json 格式:
   </tr>
   <tr>
     <td>details</td>
-    <td>array({Land|Park|House}Object ...)| Case 附屬的建物、停車或是土地</td>
+    <td>array(LandObject|ParkObject|HouseObject ...)</td>
+    <td> Case 附屬的建物、停車或是土地</td>
   </tr>
 </table>
 * FieldObject
