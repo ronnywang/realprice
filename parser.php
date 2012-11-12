@@ -74,8 +74,8 @@ class RealParser
                 ),
                 'return' => function($matches){
                     $ret = new StdClass;
-                    $ret->year = $matches[0][1];
-                    $ret->month= $matches[0][2];
+                    $ret->year = intval($matches[0][1]);
+                    $ret->month = intval($matches[0][2]);
                     return $ret;
                 },
             ),
@@ -117,8 +117,15 @@ class RealParser
             ),
             '交易筆棟數' => array(
                 'match' => array(
-                    null, // 土地：2筆, 建物：2棟 ...
+                    '/^土地：(\d+)筆\s+建物：(\d+)棟\(戶\)\s+車位：(\d+)個$/s', // 土地：2筆, 建物：2棟 ...
                 ),
+                'return' => function($matches){
+                    $ret = new StdClass;
+                    $ret->{'土地'} = intval($matches[0][1]);
+                    $ret->{'建物'} = intval($matches[0][2]);
+                    $ret->{'車位'} = intval($matches[0][3]);
+                    return $ret;
+                },
             ),
             '土地區段位置' => array(
                 'match' => array(
@@ -137,13 +144,30 @@ class RealParser
             ),
             '建物現況格局' => array(
                 'match' => array(
-                    null, // 5 房 1 廳 0 衛 有隔間
+                    '/^((\d+) 房 (\d+) 廳 (\d+) 衛 (有|無)隔間)?$/',// 5 房 1 廳 0 衛 有隔間
                 ),
+                'return' => function($matches){
+                    if (!$matches[0][1]) {
+                        return null;
+                    }
+                    $ret = new stdClass;
+                    $ret->{'房'} = intval($matches[0][2]);
+                    $ret->{'廳'} = intval($matches[0][3]);
+                    $ret->{'衛'} = intval($matches[0][4]);
+                    $ret->{'隔間'} = strval($matches[0][5]);
+                    return $ret;
+                },
             ),
             '車位總價' => array(
                 'match' => array(
-                    null, // ??
+                    '/^(([0-9,]*)元)?$/',
                 ),
+                'return' => function($matches){
+                    if (!$matches[0][1]) {
+                        return null;
+                    }
+                    return intval(str_replace(',', '', $matches[0][2]));
+                },
             ),
             '有無管理組織' => array(
                 'match' => array(
@@ -217,7 +241,7 @@ class RealParser
                     throw new Exception("script 不正確");
                 }
                 list(, $type, $pos_x84, $pos_y84, $pos_img, $pos_txt, $radius, $id, $bclass) = $matches;
-                $new_entry->pos = array($pos_x84, $pos_y84);
+                $new_entry->pos = array(floatval($pos_x84), floatval($pos_y84));
 
                 // 處理 details
                 $types = $this->getTypesFromBizCode($entry->bizcode);
@@ -247,8 +271,8 @@ class RealParser
                             $detail_data->{'主要建材'} = $td_doms->item(3)->nodeValue;
                             list($year, $month) = explode('/', $td_doms->item(4)->nodeValue);
                             $detail_data->{'完成年月'} = new StdClass;
-                            $detail_data->{'完成年月'}->year = $year;
-                            $detail_data->{'完成年月'}->month = $month;
+                            $detail_data->{'完成年月'}->year = intval($year);
+                            $detail_data->{'完成年月'}->month = intval($month);
                             $detail_data->{'總樓層數'} = $td_doms->item(5)->nodeValue;
                             $details[] = $detail_data;
                         }
@@ -282,7 +306,12 @@ class RealParser
                             $detail_data->{'序號'} = $td_doms->item(0)->nodeValue;
                             // 一樓平面 其他 升降平面 升降機械 坡道平面 坡道機械 塔式車位
                             $detail_data->{'車位類別'} = $td_doms->item(1)->nodeValue;
-                            $detail_data->{'車位價格'} = $td_doms->item(2)->nodeValue;
+                            $park_value = strval($td_doms->item(2)->nodeValue);
+                            if ('' === $park_value) {
+                                $detail_data->{'車位價格'} = null;
+                            } else {
+                                $detail_data->{'車位價格'} = intval(rtrim(str_replace(',', '', $park_value), '元'));
+                            }
                             $detail_data->{'車位面積'} = floatval($td_doms->item(3)->nodeValue);
                             $details[] = $detail_data;
                         }
