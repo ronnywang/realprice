@@ -10,9 +10,14 @@ raw/
 放從實價登錄網頁抓到原始資料，包含 HTML 和 javascript
 
 完整 json 檔案:
-* 2012/11/06 處理完成，一共 17,826 筆，到 2012/8 月資料
-    * [Dropbox](https://www.dropbox.com/sh/k4bf49ebpga1ubz/Ac9nhbnZB2)
-    * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMQ25TRDZONmxucEk/edit)
+* 2012/11/12 處理完成，一共 17,826 筆，到 2012/8 資料，格式修正過
+    * [Dropbox](https://www.dropbox.com/s/7u2h5h3aejaz7t5/realprice20121112.json)
+    * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMZGF6NHlwUktaRjA/edit)
+* 舊檔案請見 DataChange.md
+
+注意事項:
+* 資料內的交易總價和交易單價是直接從實價登錄網站上抓下來的，其中 交易單價 = (交易總價 / 建物面積) ，但是 交易總價 = (建物總價 + 車位總價) ，
+  因此交易單價的數字會受到有無車位影響而基準不同，若要做資料分析的人要考慮這個因素，交易單價可能僅供參考
 
 
 json 格式:
