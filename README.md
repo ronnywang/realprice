@@ -68,17 +68,17 @@ json 格式:
   </tr>
   <tr>
     <td>交易年月</td>
-    <td>object(year, month)</td>
+    <td>object(year: integer, month: integer)</td>
     <td></td></tr>
   <tr>
     <td>交易總價</td>
     <td>integer</td>
-    <td>單位元</td>
+    <td>單位元(PS: 這個價錢會包含停車位價錢)</td>
   </tr>
   <tr>
     <td>交易單價 約</td>
     <td>integer</td>
-    <td>單位(元/坪)</td>
+    <td>單位(元/坪)(PS: 這個數字僅供參考，因為他會等於 (車位總價+建物總價) / (建物移轉總面積) ，會受到車位總價影響</td>
   </tr>
   <tr>
     <td>建物移轉總面積</td>
@@ -92,8 +92,8 @@ json 格式:
   </tr>
   <tr>
     <td>交易筆棟數</td>
-    <td>string</td>
-    <td>文字描述</td>
+    <td>null or object(建物: integer, 車位: integer, 土地: integer)</td>
+    <td>後面的 integer 會等於 details 資運的各項目數量</td>
   </tr>
   <tr>
     <td>土地區段位置</td>
@@ -111,13 +111,13 @@ json 格式:
   </tr>
   <tr>
     <td>建物現況格局</td>
-    <td>string</td>
-    <td>x 房 x 廳 x 衛 有隔間</td>
+    <td>null or object(房: integer, 廳: integer, 衛: integer, 隔間: string(有, 無))</td>
+    <td></td>
   </tr>
   <tr>
     <td>車位總價</td>
-    <td>string</td>
-    <td></td></tr>
+    <td>null or integer</td>
+    <td>null 表示實價登錄網站未提供此資訊</td></tr>
   <tr>
     <td>有無管理組織</td>
     <td>string</td>
@@ -156,7 +156,7 @@ json 格式:
     <td>加強磚造 土造 木造 混凝土造 磚造 見使用執照 見其他登記事項 見其它登記事項 鋼筋混凝土加強磚造 鋼筋混凝土構造 鋼筋混凝土造 鋼造 鋼骨混凝土造 鋼骨鋼筋混凝土造 鐵造 預力混凝土造</td></tr>
   <tr>
     <td>完成年月</td>
-    <td>object(year, month)</td>
+    <td>object(year: integer, month: integer)</td>
     <td></td></tr>
   <tr>
     <td>總樓層數</td>
