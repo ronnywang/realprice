@@ -6,6 +6,9 @@ crawler.php
 parser.php
 parse 資料的程式，將 raw 資料夾內所有 HTML 轉換成 json
 
+json2csv.php
+把 parser.php 產生的 json 檔，分成四個 CSV 檔(case,建物,土地,車位)
+
 raw/
 放從實價登錄網頁抓到原始資料，包含 HTML 和 javascript
 
@@ -13,6 +16,9 @@ raw/
 * 2012/11/12 處理完成，一共 17,826 筆，到 2012/8 資料，格式修正過
     * [Dropbox](https://www.dropbox.com/s/7u2h5h3aejaz7t5/realprice20121112.json)
     * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMZGF6NHlwUktaRjA/edit)
+Excel 格式:
+* 2012/11/12 版本，一共 17.826 筆，到 2012/8 資料 (共四個分頁)
+    * [Google Drive](https://docs.google.com/file/d/0B_CxAZD9rYXMRkEtUEVyRURWcVk/edit?pli=1)
 * 舊檔案請見 DataChange.md
 
 注意事項:
