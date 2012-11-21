@@ -12,6 +12,10 @@ json2csv.php
 raw/
 放從實價登錄網頁抓到原始資料，包含 HTML 和 javascript
 
+九月資料也已爬完，不過因為程式改很大，github 這邊之後再更新
+這邊先補上我部落格網址: [2012年9月實價登錄已經爬完了](http://ronnywang.pixnet.net/blog/post/31391515)
+等後續程式碼整理好以及資料再更完備再傳上來
+
 完整 json 檔案:
 * 2012/11/12 處理完成，一共 17,826 筆，到 2012/8 資料，格式修正過
     * [Dropbox](https://www.dropbox.com/s/7u2h5h3aejaz7t5/realprice20121112.json)
