@@ -5,7 +5,7 @@ $case_fp = fopen('case.csv', 'w');
 $park_fp = fopen('park.csv', 'w');
 $land_fp = fopen('land.csv', 'w');
 $house_fp = fopen('house.csv', 'w');
-fputs($case_fp, '#CaseNo,CaseSeq,單價,總價,交易年月,廳,衛,隔間,房,門牌,有無管理組織,車位總價,建物數,車位數,土地數,建物總面積,建物型態,位置,地址' . PHP_EOL);
+fputs($case_fp, '#CaseNo,CaseSeq,單價,總價,交易年月,廳,衛,隔間,房,門牌,有無管理組織,車位總價,建物數,車位數,土地數,建物總面積,建物型態,lng,lat,地址' . PHP_EOL);
 fputs($house_fp, '#CaseNo,CaseSeq,總樓層數,主要用途,建物移轉面積,建物區段位置,完成年月,主要建材' . PHP_EOL);
 fputs($park_fp, '#CaseNo,CaseSeq,車位類別,序號,車位面積,車位價格' . PHP_EOL);
 fputs($land_fp, '#CaseNo,CaseSeq,土地移轉面積,土地區段位置,使用分區或編定' . PHP_EOL);
@@ -30,7 +30,8 @@ foreach ($json as $case) {
         $fields->{'交易筆棟數'}->{'土地'},
         $fields->{'建物移轉總面積'},
         $fields->{'建物型態'},
-        implode(',', $case->pos),
+        $case->pos[0],
+        $case->pos[1],
         $case->address,
     );
     fputcsv($case_fp, $data);
